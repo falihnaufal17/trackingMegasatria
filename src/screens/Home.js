@@ -20,9 +20,9 @@ const Home = (props) => {
         },
         user_id: 1,
         customer_id: '',
-        deskripsi: '',
-        time: null
+        deskripsi: ''
     })
+    const [time, setTime] = useState(null)
     const [customers, setCustomers] = useState([
         {label: 'Customer 1', value: 1},
         {label: 'Customer 2', value: 2},
@@ -37,10 +37,7 @@ const Home = (props) => {
     ])
 
     const clock = () =>{
-        setData({
-            ...data,
-            time: moment().format("HH:mm:ss")
-        })
+        setTime(moment().format("HH:mm:ss"))
     }
 
     useEffect(()=>{
@@ -94,27 +91,32 @@ const Home = (props) => {
 
     }, [])
 
+    console.log(data)
+
     return(
+        <SafeAreaView
+            style={styles.containerApp}
+        >
+            <AppBar
+                style={styles.appBar}
+            >
+                <Text
+                    style={styles.titleBar}>
+                    Your Name
+                </Text>
+                <Image source={IconUser} />
+            </AppBar>
             <ScrollView
-                contentContainerStyle={styles.containerApp}
+                contentContainerStyle={styles.scrollView}
             >
                 <View>
-                    <AppBar
-                        style={styles.appBar}
-                    >
-                        <Text
-                            style={styles.titleBar}>
-                            Your Name
-                        </Text>
-                        <Image source={IconUser} />
-                    </AppBar>
                     <View style={styles.container}>
                         {maps}
                     </View>
                     <Text
                         style={styles.title}>Kehadiran</Text>
                     <Text
-                        style={styles.title}>{data.time}</Text>
+                        style={styles.title}>{time}</Text>
                     <Text
                         style={styles.date}>{moment().endOf("day").format("DD MMMM YYYY")}</Text>
                     <Text
@@ -153,14 +155,18 @@ const Home = (props) => {
                     </View>
                 </View>
             </ScrollView>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
-    containerApp:{
-        backgroundColor: '#FFFFFF',
-        justifyContent: 'space-between',
-        paddingBottom: 20
+    containerApp: {
+        flex: 1,
+        backgroundColor: '#FFF'
+    },
+    scrollView:{
+        flexGrow: 1,
+        justifyContent: 'space-between'
     },
     container:{
         height: 177,
@@ -188,7 +194,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginHorizontal: 50
+        marginHorizontal: 50,
+        marginBottom: 20
     },
     label: {
         fontFamily: 'NunitoSans-Bold',

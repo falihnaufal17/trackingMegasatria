@@ -16,16 +16,14 @@ const Login = (props) => {
     
     return(
         <SafeAreaView
-            style={{
-                flex: 1
-            }}
+            style={styles.container}
         >
             <ScrollView
-                contentContainerStyle={styles.container}
+                contentContainerStyle={styles.scrollView}
             >
-                <Text style={styles.title}>Megasatria Absen</Text>
-                <Image source={Logo} style={styles.image}/>
-                <View style={styles.form}>
+                <View>
+                    <Text style={styles.title}>Megasatria Absen</Text>
+                    <Image source={Logo} style={styles.image}/>
                     <Input 
                         type="text"
                         placeholder="Masukan Email atau Nomor Hp"
@@ -51,21 +49,25 @@ const Login = (props) => {
 }
 
 const styles = StyleSheet.create({
-    container: {
+    container:{
         flex: 1,
-        justifyContent: "space-between",
-        alignItems: 'center',
-        padding: 20,
         backgroundColor: '#FFF'
+    },
+    scrollView:{
+        flexGrow: 1,
+        justifyContent: 'space-between',
+        padding: 20
     },
     title: {
         fontSize: 30,
         textAlign: 'center',
         color: '#5BC1DF',
-        fontFamily: "NunitoSans-Bold"
+        fontFamily: "NunitoSans-Bold",
+        marginBottom: 15
     },
-    form:{
-        width: '100%'
+    image:{
+        marginBottom: 20,
+        alignSelf: 'center'
     }
 })
 
