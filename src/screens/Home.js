@@ -9,7 +9,7 @@ import Button from '../components/Button';
 import Combobox from '../components/Combobox';
 import moment from 'moment'
 import CustomModal from '../components/CustomModal';
-import customMarker from '../assets/icons/Iconawesome-map-marker-alt-3.png'
+import customMarker from '../assets/icons/Iconawesome-map-marker-alt.png'
 
 const Home = (props) => {
     const [data, setData] = useState({
@@ -67,6 +67,30 @@ const Home = (props) => {
         }
     }
 
+    const getCurrentPosition = () => {
+        Geolocation.getCurrentPosition(
+            position => {
+                setData({
+                    ...data,
+                    coords: {
+                        ...data.coords,
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    }
+                })
+            },
+            error => {
+                Alert.alert(
+                    'Error', 
+                    error.message
+                )
+            },
+            {
+                enableHighAccuracy: true
+            }
+        );
+    }
+
 
     useEffect(()=>{
         requestLocationPermission();
@@ -74,6 +98,8 @@ const Home = (props) => {
         setInterval(() => {
             clock()
         }, 1000)
+
+        getCurrentPosition();
 
         // Geocoder.init("AIzaSyAAeumLLK_usi-YhaX4sDC_Rx9lLxfz0f4");
 
@@ -90,20 +116,10 @@ const Home = (props) => {
         //         )
         //     });
 
-        Geolocation.getCurrentPosition(
-            position => {
-                setData({
-                    ...data,
-                    coords: {
-                        ...data.coords,
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude
-                    }
-                })
-            },
-            error => Alert.alert('Error', JSON.stringify(error)),
-            {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-        );
+        // Unsubscribe
+        return () => {
+            getCurrentPosition()
+        }
 
     }, [])
 
@@ -140,11 +156,12 @@ const Home = (props) => {
                             showsMyLocationButton={true}
                             showsUserLocation={false}
                             showsScale={true}
+                            region={data.coords}
                         >
                             <Marker
                                 coordinate={data.coords}
-                                title="Heloo"
-                                description="This D"
+                                title="This is you"
+                                description={`${data.coords.latitude}, ${data.coords.longitude}`}
                                 image={customMarker}
                             />
                         </MapView>
