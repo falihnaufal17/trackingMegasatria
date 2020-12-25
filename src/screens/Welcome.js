@@ -18,7 +18,7 @@ const Welcome = (props) => {
     return(
         <View style={styles.container}>
             <View>
-                <Text style={styles.title}>Megasatria Absen</Text>
+                <Text style={styles.title}>Tracking Megasatria</Text>
             </View>
             <View>
                 <Image source={Logo} />

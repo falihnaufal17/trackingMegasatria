@@ -22,7 +22,7 @@ const Login = (props) => {
                 contentContainerStyle={styles.scrollView}
             >
                 <View>
-                    <Text style={styles.title}>Megasatria Absen</Text>
+                    <Text style={styles.title}>Tracking Megasatria</Text>
                     <Image source={Logo} style={styles.image}/>
                     <Input 
                         type="text"

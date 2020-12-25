@@ -37,7 +37,7 @@ const Home = (props) => {
     ])
 
     const clock = () =>{
-        setTime(moment().format("HH:mm:ss"))
+        setTime(moment().format("HH:mm"))
     }
 
     useEffect(()=>{
@@ -71,7 +71,7 @@ const Home = (props) => {
             provider={PROVIDER_GOOGLE}
             initialRegion={data.coords}
             style={styles.map}
-            showsMyLocationButton={true}
+            showsMyLocationButton={false}
             showsUserLocation={true}
             showsScale={true}
         />)
@@ -91,8 +91,6 @@ const Home = (props) => {
 
     }, [])
 
-    console.log(data)
-
     return(
         <SafeAreaView
             style={styles.containerApp}
@@ -110,7 +108,7 @@ const Home = (props) => {
                 contentContainerStyle={styles.scrollView}
             >
                 <View>
-                    <View style={styles.container}>
+                    <View style={styles.container} pointerEvents="none">
                         {maps}
                     </View>
                     <Text
