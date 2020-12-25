@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import { View, Text, Image, StyleSheet, SafeAreaView, ScrollView, Modal } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import { View, Text, Image, StyleSheet, SafeAreaView, ScrollView, Alert, PermissionsAndroid } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import AppBar from '../components/AppBar';
@@ -9,9 +9,9 @@ import Button from '../components/Button';
 import Combobox from '../components/Combobox';
 import moment from 'moment'
 import CustomModal from '../components/CustomModal';
+import customMarker from '../assets/icons/Iconawesome-map-marker-alt-3.png'
 
 const Home = (props) => {
-    const [maps, setMaps] = useState(null);
     const [data, setData] = useState({
         coords: {
             latitude: 37.78825,
@@ -43,54 +43,67 @@ const Home = (props) => {
         setTime(moment().format("HH:mm"))
     }
 
+    const requestLocationPermission = async () =>{
+        try{
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                {
+                    title: "Akses lokasi GPS",
+                    message: 
+                        "Tracking Megasatria butuh perizinan akses GPS " + 
+                        "izinkan?",
+                    buttonPositive: "Izinkan",
+                    buttonNegative: "Tolak"
+                }
+            );
+
+            if(granted === PermissionsAndroid.RESULTS.GRANTED){
+                console.log("Granted location!")
+            }else{
+                console.log("Denied!")
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+
     useEffect(()=>{
-        
+        requestLocationPermission();
+
         setInterval(() => {
             clock()
         }, 1000)
 
-        Geocoder.init("AIzaSyAAeumLLK_usi-YhaX4sDC_Rx9lLxfz0f4");
+        // Geocoder.init("AIzaSyAAeumLLK_usi-YhaX4sDC_Rx9lLxfz0f4");
 
-        Geolocation
-            .getCurrentPosition(info => 
+        // Geocoder
+        //     .from(data.coords.latitude, data.coords.longitude)
+        //     .then(json => {
+        // 		var addressComponent = json.results[0].address_components[0];
+        //         console.log(addressComponent);
+        //     })
+        //     .catch(error => {
+        //         Alert.alert(
+        //             'Error', 
+        //             error.message
+        //         )
+        //     });
+
+        Geolocation.getCurrentPosition(
+            position => {
                 setData({
-                    ...data, 
+                    ...data,
                     coords: {
                         ...data.coords,
-                        latitude: info.coords.latitude, 
-                        longitude: info.coords.longitude
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
                     }
-                }))
- 
-        Geocoder
-            .from(data.coords.latitude, data.coords.longitude)
-            .then(json => {
-        		var addressComponent = json.results[0].address_components[0];
-                console.log(addressComponent);
-            })
-            .catch(error => console.warn(error));
-        
-        setMaps(<MapView
-            provider={PROVIDER_GOOGLE}
-            initialRegion={data.coords}
-            style={styles.map}
-            showsMyLocationButton={false}
-            showsUserLocation={true}
-            showsScale={true}
-        />)
-
-        return async () => {
-            await Geolocation
-                    .getCurrentPosition(info => 
-                        setData({
-                            ...data, 
-                            coords: {
-                                ...data.coords,
-                                latitude: info.coords.latitude, 
-                                longitude: info.coords.longitude
-                            }
-                        }))
-        }
+                })
+            },
+            error => Alert.alert('Error', JSON.stringify(error)),
+            {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+        );
 
     }, [])
 
@@ -119,8 +132,22 @@ const Home = (props) => {
                 contentContainerStyle={styles.scrollView}
             >
                 <View>
-                    <View style={styles.container} pointerEvents="none">
-                        {maps}
+                    <View style={styles.container}>
+                        <MapView
+                            provider={PROVIDER_GOOGLE}
+                            initialRegion={data.coords}
+                            style={styles.map}
+                            showsMyLocationButton={true}
+                            showsUserLocation={false}
+                            showsScale={true}
+                        >
+                            <Marker
+                                coordinate={data.coords}
+                                title="Heloo"
+                                description="This D"
+                                image={customMarker}
+                            />
+                        </MapView>
                     </View>
                     <Text
                         style={styles.title}>Kehadiran</Text>
