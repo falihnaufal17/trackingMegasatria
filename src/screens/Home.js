@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, Text, Image, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, SafeAreaView, ScrollView, Modal } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
@@ -8,6 +8,7 @@ import IconUser from '../assets/icons/Iconawesome-user-circle.png';
 import Button from '../components/Button';
 import Combobox from '../components/Combobox';
 import moment from 'moment'
+import CustomModal from '../components/CustomModal';
 
 const Home = (props) => {
     const [maps, setMaps] = useState(null);
@@ -35,6 +36,8 @@ const Home = (props) => {
         {label: 'deskripsi 3', value: 'deskripsi 3'},
         {label: 'deskripsi 4', value: 'deskripsi 4'}
     ])
+    const [showModalCheckIn, setShowModalCheckIn] = useState(false);
+    const [showModalCheckOut, setShowModalCheckOut] = useState(false);
 
     const clock = () =>{
         setTime(moment().format("HH:mm"))
@@ -91,6 +94,14 @@ const Home = (props) => {
 
     }, [])
 
+    const openModalCheck = (type) => {
+        if (type == 'in'){
+            setShowModalCheckIn(!showModalCheckIn)
+        }else{
+            setShowModalCheckOut(!showModalCheckOut)
+        }
+    }
+
     return(
         <SafeAreaView
             style={styles.containerApp}
@@ -144,15 +155,89 @@ const Home = (props) => {
                     <View>
                         <Button
                             title="Check In"
+                            onClick={() => openModalCheck("in")}
                         />
                     </View>
                     <View>
                         <Button
                             title="Check Out"
+                            onClick={() => openModalCheck("out")}
                         />
                     </View>
                 </View>
             </ScrollView>
+            <CustomModal
+                showModal={showModalCheckIn}
+                transparent={true}
+                animationType="fade"
+            >
+                <View
+                    style={styles.modalContainer}
+                >
+                    <View
+                        style={styles.modalContent}
+                    >
+                        <Text
+                            style={styles.title}>Kehadiran</Text>
+                        <Text
+                            style={styles.title}>{time}</Text>
+                        <Text
+                            style={styles.date}>{moment().endOf("day").format("DD MMMM YYYY")}</Text>
+                        <View
+                            style={styles.sectionButtonModal}
+                        >
+                        <View>
+                            <Button
+                                title="Check In"
+                                onClick={() => openModalCheck("in")}
+                            />
+                        </View>
+                        <View>
+                            <Button
+                                title="Batal"
+                                onClick={() => openModalCheck("in")}
+                            />
+                        </View>
+                        </View>
+                    </View>
+                </View>
+            </CustomModal>
+            <CustomModal
+                showModal={showModalCheckOut}
+                transparent={true}
+                animationType="fade"
+            >
+                <View
+                    style={styles.modalContainer}
+                >
+                    <View
+                        style={styles.modalContent}
+                    >
+                        <Text
+                            style={styles.title}>Kehadiran</Text>
+                        <Text
+                            style={styles.title}>{time}</Text>
+                        <Text
+                            style={styles.date}>{moment().endOf("day").format("DD MMMM YYYY")}</Text>
+                        <View
+                            style={styles.sectionButtonModal}
+                        >
+                        <View>
+                            <Button
+                                title="Check Out"
+                                onClick={() => openModalCheck("out")}
+                            />
+                        </View>
+                        <View>
+                            <Button
+                                title="Batal"
+                                onClick={() => openModalCheck("out")}
+                            />
+                        </View>
+                        </View>
+                    </View>
+                </View>
+            </CustomModal>
         </SafeAreaView>
     )
 }
@@ -223,6 +308,23 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: "#7A7A7A",
         paddingHorizontal: 20
+    },
+    sectionButtonModal:{
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    modalContainer:{
+        backgroundColor: 'rgba(0,0,0,0.8)',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    modalContent:{
+        backgroundColor: '#FFF',
+        elevation: 1,
+        borderRadius: 3,
+        padding: 15,
+        width: 275
     }
 })
 
